@@ -45,7 +45,7 @@ public class CountUpDown {
 	public void await() throws InterruptedException {
 		lock.lock();
 		try {
-			if (count.get() > 0) {
+			while (count.get() > 0) {
 				cond.await();
 			}
 		} finally {

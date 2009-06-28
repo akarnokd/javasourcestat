@@ -598,7 +598,7 @@ public class ResultsViewer {
 	private static JavaFileEvaluator[] processFiles(File[] files) throws InterruptedException {
 		CountUpDown count = new CountUpDown();
 		ThreadPoolExecutor ex = (ThreadPoolExecutor)Executors
-		.newFixedThreadPool(1 /*, Runtime.getRuntime().availableProcessors() */);
+		.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		
 		JavaFileEvaluator[] jfes = new JavaFileEvaluator[files.length];
 		for (int i = 0; i < jfes.length; i++) {
