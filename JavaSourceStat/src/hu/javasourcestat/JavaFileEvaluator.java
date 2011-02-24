@@ -57,6 +57,7 @@ public class JavaFileEvaluator implements Runnable {
 	/**
 	 * Evaluate the given file.
 	 */
+	@Override
 	public void run() {
 		try {
 			if (srcFile.isFile()) {

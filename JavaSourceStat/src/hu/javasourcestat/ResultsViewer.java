@@ -329,6 +329,18 @@ public class ResultsViewer {
 	private void initMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
+		JMenuItem again = new JMenuItem("New...");
+		again.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					main(new String[0]);
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+		});
+		
 		JMenuItem exportAllXML = new JMenuItem("Export All (XML)...");
 		exportAllXML.addActionListener(new ActionListener() {
 			@Override
@@ -364,6 +376,8 @@ public class ResultsViewer {
 			}
 		});
 		
+		fileMenu.add(again);
+		fileMenu.addSeparator();
 		fileMenu.add(exportAllXML);
 		fileMenu.add(exportCurrentXML);
 		fileMenu.add(exportCurrentCSV);
@@ -601,16 +615,19 @@ public class ResultsViewer {
 		.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		
 		JavaFileEvaluator[] jfes = new JavaFileEvaluator[files.length];
+		count.increment();
 		for (int i = 0; i < jfes.length; i++) {
 			count.increment();
 			jfes[i] = new JavaFileEvaluator(files[i], count, ex);
 			ex.execute(jfes[i]);
 		}
+		count.decrement();
 		count.await();
 		for (int i = 0; i < jfes.length; i++) {
 			count.increment();
 			final JavaFileEvaluator jfe = jfes[i];
 			ex.execute(new Runnable() {
+				@Override
 				public void run() {
 					jfe.aggregate();
 				}
@@ -627,22 +644,30 @@ public class ResultsViewer {
 	 * @param args the arguments
 	 * @throws Exception on error
 	 */
-	public static void main(String[] args) throws Exception {
-		File[] files = null;
-		if (args.length == 0) {
-			JOptionPane.showMessageDialog(null, "Please specify the path to the source directory in the command line.");
-			return;
-		} else {
-			files = new File[args.length];
-			for (int i = 0; i < files.length; i++) {
-				files[i] = new File(args[i]);
-			}
-		}
-		final JavaFileEvaluator[] roots = processFiles(files);
+	public static void main(final String[] args) throws Exception {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new ResultsViewer(roots);
+				File[] files = null;
+				if (args.length == 0) {
+					JFileChooser f = new JFileChooser(".");
+					f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					if (f.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+						return;
+					}
+					files = new File[] { f.getSelectedFile() };
+				} else {
+					files = new File[args.length];
+					for (int i = 0; i < files.length; i++) {
+						files[i] = new File(args[i]);
+					}
+				}
+				try {
+					final JavaFileEvaluator[] roots = processFiles(files);
+					new ResultsViewer(roots);
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
 			}
 		});
 	}
