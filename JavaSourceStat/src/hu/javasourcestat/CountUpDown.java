@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class to signal end of recursive processing during a concurrent treewalk.
- * @author karnokd, 2008.03.13.
+ * @author akarnokd, 2008.03.13.
  * @version $Revision 1.0$
  */
 public class CountUpDown {

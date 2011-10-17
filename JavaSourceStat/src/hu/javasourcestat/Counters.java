@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author karnokd, 2008.03.13.
+ * @author akarnokd, 2008.03.13.
  * @version $Revision 1.0$
  */
 public class Counters {

@@ -3,7 +3,7 @@ package hu.javasourcestat;
 
 /**
  * The type of the tokens.
- * @author karnokd, 2008.03.17.
+ * @author akarnokd, 2008.03.17.
  * @version $Revision 1.0$
  */
 public enum TokenType {

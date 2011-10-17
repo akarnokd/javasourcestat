@@ -4,7 +4,7 @@ package hu.javasourcestat;
 /**
  * A modifiable long number value.
  * It is mutable and not thread safe!
- * @author karnokd, 2008.03.13.
+ * @author akarnokd, 2008.03.13.
  * @version $Revision 1.0$
  */
 public class LongValue extends Number {

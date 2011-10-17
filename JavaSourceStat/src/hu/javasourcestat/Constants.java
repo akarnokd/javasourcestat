@@ -3,7 +3,7 @@ package hu.javasourcestat;
 
 /**
  * Constants class.
- * @author karnokd, 2008.03.12.
+ * @author akarnokd, 2008.03.12.
  * @version $Revision 1.0$
  */
 public final class Constants {

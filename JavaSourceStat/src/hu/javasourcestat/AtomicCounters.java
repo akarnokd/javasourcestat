@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * @author karnokd, 2008.03.12.
+ * @author akarnokd, 2008.03.12.
  * @version $Revision 1.0$
  */
 public class AtomicCounters {

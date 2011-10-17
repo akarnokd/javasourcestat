@@ -41,7 +41,7 @@ import javax.swing.tree.TreePath;
 
 /**
  * View results of traversing a source path.
- * @author karnokd, 2008.03.12.
+ * @author akarnokd, 2008.03.12.
  * @version $Revision 1.0$
  */
 public class ResultsViewer {
@@ -63,7 +63,7 @@ public class ResultsViewer {
 	private JavaFileEvaluator current;
 	/**
 	 * A name-value record.
-	 * @author karnokd, 2008.03.12.
+	 * @author akarnokd, 2008.03.12.
 	 * @version $Revision 1.0$
 	 */
 	public static class NameValue {
@@ -83,7 +83,7 @@ public class ResultsViewer {
 	}
 	/**
 	 * An option element.
-	 * @author karnokd, 2008.03.12.
+	 * @author akarnokd, 2008.03.12.
 	 * @version $Revision 1.0$
 	 */
 	public static class Option {
@@ -110,7 +110,7 @@ public class ResultsViewer {
 	}
 	/**
 	 * Statistics counter table model.
-	 * @author karnokd, 2008.03.12.
+	 * @author akarnokd, 2008.03.12.
 	 * @version $Revision 1.0$
 	 */
 	public static class CountersModel extends AbstractTableModel {

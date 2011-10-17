@@ -28,7 +28,7 @@ import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
 /**
- * @author karnokd, 2008.03.12.
+ * @author akarnokd, 2008.03.12.
  * @version $Revision 1.0$
  */
 public class JavaFileEvaluator implements Runnable {
