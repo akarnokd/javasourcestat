@@ -23,6 +23,7 @@ package hu.javaspellcheck;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,6 +56,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -103,18 +105,18 @@ public class SpellcheckSource extends JFrame {
 				pi.put(file, is);
 			}
 			is.add(line);
-			
+
 			Map<String, List<Integer>> wi = byFile.get(file);
 			if (wi == null) {
 				wi = Maps.newHashMap();
 				byFile.put(file, wi);
 			}
-			is = wi.get(word);
-			if (is == null) {
-				is = Lists.newArrayList();
-				wi.put(word, is);
+			List<Integer> is2 = wi.get(word);
+			if (is2 == null) {
+				is2 = Lists.newArrayList();
+				wi.put(word, is2);
 			}
-			is.add(line);
+			is2.add(line);
 		}
 		/** Clear contents. */
 		public void clear() {
@@ -131,13 +133,6 @@ public class SpellcheckSource extends JFrame {
 				for (Map.Entry<String, List<Integer>> e1 : e0.getValue().entrySet()) {
 					for (Integer i : e1.getValue()) {
 						add(e0.getKey(), e1.getKey(), i);
-					}
-				}
-			}
-			for (Map.Entry<String, Map<String, List<Integer>>> e0 : other.byWords.entrySet()) {
-				for (Map.Entry<String, List<Integer>> e1 : e0.getValue().entrySet()) {
-					for (Integer i : e1.getValue()) {
-						add(e1.getKey(), e0.getKey(), i);
 					}
 				}
 			}
@@ -173,6 +168,8 @@ public class SpellcheckSource extends JFrame {
 	AbstractTableModel byWordMainModel;
 	/** The model for word details. */
 	AbstractTableModel byWordSlaveModel;
+	/** The minimum word length. */
+	volatile int minWordLength = 3;
 	/** The main table entry. */
 	static class MainEntry {
 		/** The key. */
@@ -228,6 +225,19 @@ public class SpellcheckSource extends JFrame {
 				doSelectDir();
 			}
 		});
+		
+		JMenuItem wordLength = new JMenuItem("Minimum word length...");
+		wordLength.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String s = JOptionPane.showInputDialog("Minimum word length:", "" + minWordLength);
+				if (s != null && s.length() > 0) {
+					minWordLength = Integer.parseInt(s);
+				}
+			}
+		});
+		
+		
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.addActionListener(new ActionListener() {
 			@Override
@@ -237,6 +247,7 @@ public class SpellcheckSource extends JFrame {
 			}
 		});
 		action.add(scan);
+		action.add(wordLength);
 		action.addSeparator();
 		action.add(exit);
 		mb.add(action);
@@ -277,6 +288,15 @@ public class SpellcheckSource extends JFrame {
 		
 		byFileSlave.setAutoCreateRowSorter(true);
 		byWordSlave.setAutoCreateRowSorter(true);
+		
+		byFileMain.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
+		byFileMain.setRowHeight(20);
+		byWordMain.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
+		byWordMain.setRowHeight(20);
+		byFileSlave.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
+		byFileSlave.setRowHeight(20);
+		byWordSlave.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
+		byWordSlave.setRowHeight(20);
 		
 		tabs.addTab("By files", new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
 			new JScrollPane(byFileMain),
@@ -549,11 +569,11 @@ public class SpellcheckSource extends JFrame {
 		int i = 1;
 		String base = Paths.get(".").toAbsolutePath().toString();
 		for (String line : Files.readAllLines(file, Charset.forName("UTF-8"))) {
-			String[] ws = line.split("\\b+|_");
+			String[] ws = line.split("\\b+|_|\\d+");
 			for (String w : ws) {
 				List<String> sw = camelCaseSplit(w);
 				for (String s : sw) {
-					if (s.length() > 1 && Character.isAlphabetic(s.charAt(0))) {
+					if (s.length() > minWordLength && Character.isAlphabetic(s.charAt(0))) {
 						if (!check.contains(s.toLowerCase()) && !ignore.contains(s.toLowerCase())) {
 							wm.add(uncommonPart(base, file.toAbsolutePath().toString()), s, i);
 						}
